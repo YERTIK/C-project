@@ -1,0 +1,17 @@
+Z:\РПМ_Филатов\Project\Project\bin\Debug\Project.exe.config
+Z:\РПМ_Филатов\Project\Project\bin\Debug\Project.exe
+Z:\РПМ_Филатов\Project\Project\bin\Debug\Project.pdb
+Z:\РПМ_Филатов\Project\Project\bin\Debug\System.Data.SQLite.dll
+Z:\РПМ_Филатов\Project\Project\bin\Debug\System.Data.SQLite.xml
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.LoginForm.resources
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.MainForm.resources
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.ProfileForm.resources
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.Properties.Resources.resources
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.RegistrationForm.resources
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.ReturnBookForm.resources
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.csproj.GenerateResource.cache
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.csproj.CoreCompileInputs.cache
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.csproj.CopyComplete
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.exe
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.pdb
+Z:\РПМ_Филатов\Project\Project\obj\Debug\Project.csproj.AssemblyReference.cache
