@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using Project.Helpers;
 
@@ -12,13 +12,13 @@ namespace Project
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Инициализация базы данных
+            // Инициализация файлов данных (Data/*.txt)
             DatabaseHelper.InitializeDatabase();
 
-            // Раскомментируйте эту строку, чтобы добавить тестовые книги
+            // Раскомментируйте, чтобы добавить тестовые книги в books.txt
             // DatabaseHelper.AddTestBooks();
 
-            //  DatabaseHelper.FixMissingGenres();
+            // DatabaseHelper.FixMissingGenres();
             Application.Run(new LoginForm());
         }
     }

@@ -1,4 +1,4 @@
-﻿
+
 namespace Project
 {
     partial class MainForm
@@ -37,6 +37,7 @@ namespace Project
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnProfile = new System.Windows.Forms.Button();
             this.btnLogout = new System.Windows.Forms.Button();
+            this.btnAddBook = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBooks)).BeginInit();
             this.SuspendLayout();
             // 
@@ -153,6 +154,24 @@ namespace Project
             this.btnLogout.UseVisualStyleBackColor = false;
             this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
             // 
+            // btnAddBook
+            // 
+            this.btnAddBook.BackColor = System.Drawing.Color.Goldenrod;
+            this.btnAddBook.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAddBook.FlatAppearance.BorderSize = 0;
+            this.btnAddBook.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAddBook.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold);
+            this.btnAddBook.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnAddBook.Location = new System.Drawing.Point(796, 114);
+            this.btnAddBook.Margin = new System.Windows.Forms.Padding(4);
+            this.btnAddBook.Name = "btnAddBook";
+            this.btnAddBook.Size = new System.Drawing.Size(146, 30);
+            this.btnAddBook.TabIndex = 9;
+            this.btnAddBook.Text = "Добавить книгу";
+            this.btnAddBook.UseVisualStyleBackColor = false;
+            this.btnAddBook.Visible = false;
+            this.btnAddBook.Click += new System.EventHandler(this.btnAddBook_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
@@ -160,6 +179,7 @@ namespace Project
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.DimGray;
             this.ClientSize = new System.Drawing.Size(1087, 608);
+            this.Controls.Add(this.btnAddBook);
             this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.btnProfile);
             this.Controls.Add(this.txtSearch);
@@ -189,5 +209,6 @@ namespace Project
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Button btnProfile;
         private System.Windows.Forms.Button btnLogout;
+        private System.Windows.Forms.Button btnAddBook;
     }
 }

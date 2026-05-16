@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -21,6 +21,7 @@ namespace Project
             this.MaximizeBox = false;
 
             InitializeDataGridView();
+            ApplyAdminUI();
             LoadBooks();
             dgvBooks.CellContentClick += dgvBooks_CellContentClick;
             //     dgvBooks.ColumnHeaderMouseClick += DgvBooks_ColumnHeaderMouseClick;
@@ -312,6 +313,16 @@ namespace Project
             LoginForm loginForm = new LoginForm();
             loginForm.Show();
             this.Close();
+        }
+
+        private void ApplyAdminUI()
+        {
+            btnAddBook.Visible = AuthManager.IsAdmin;
+        }
+
+        private void btnAddBook_Click(object sender, EventArgs e)
+        {
+            // TODO: форма добавления книги
         }
 
     }
