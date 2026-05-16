@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,8 +14,9 @@ namespace Project.Models
         public string Genre { get; set; }  // НОВОЕ ПОЛЕ - ЖАНР
         public string ISBN { get; set; }
         public int Year { get; set; }
-        public int Quantity { get; set; }         
-        public int AvailableQuantity { get; set; }  
+        public int Quantity { get; set; }
+        public int LoanDays { get; set; } = 14;
+        public int AvailableQuantity { get; set; }
         public int BorrowedQuantity => Quantity - AvailableQuantity; 
     }
 }

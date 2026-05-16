@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Project.Helpers;
@@ -216,32 +216,28 @@ namespace Project
                 string.IsNullOrWhiteSpace(group) ||
                 string.IsNullOrWhiteSpace(password))
             {
-                MessageBox.Show("Заполните все поля!", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                AppDialog.Warning(this, "Заполните все поля!");
                 return;
             }
 
             // Проверка совпадения паролей
             if (password != confirmPassword)
             {
-                MessageBox.Show("Пароли не совпадают!", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                AppDialog.Warning(this, "Пароли не совпадают!");
                 return;
             }
 
             // Проверка длины пароля
             if (password.Length < 6)
             {
-                MessageBox.Show("Пароль должен быть не менее 6 символов!", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                AppDialog.Warning(this, "Пароль должен быть не менее 6 символов!");
                 return;
             }
 
             // Проверка уникальности логина
             if (DatabaseHelper.UserExists(login))
             {
-                MessageBox.Show("Пользователь с таким логином уже существует!", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                AppDialog.Warning(this, "Пользователь с таким логином уже существует!");
                 return;
             }
 
@@ -263,8 +259,7 @@ namespace Project
             // Сохранение в БД
             if (DatabaseHelper.AddUser(newUser))
             {
-                MessageBox.Show($"Регистрация прошла успешно!\nКурс: {course}", "Успех",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                AppDialog.Success(this, $"Регистрация прошла успешно!\nКурс: {course}");
 
                 LoginForm loginForm = new LoginForm();
                 loginForm.Show();
@@ -272,8 +267,7 @@ namespace Project
             }
             else
             {
-                MessageBox.Show("Ошибка при регистрации!", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppDialog.Error(this, "Ошибка при регистрации!");
             }
         }
 

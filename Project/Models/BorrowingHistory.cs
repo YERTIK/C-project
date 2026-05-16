@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Project.Models
 {
@@ -11,6 +11,7 @@ namespace Project.Models
         public string BookAuthor { get; set; }
         public DateTime BorrowDate { get; set; }
         public DateTime? ReturnDate { get; set; }
+        public int LoanDays { get; set; } = 14;
 
         public string Status
         {
@@ -19,7 +20,7 @@ namespace Project.Models
                 if (ReturnDate.HasValue)
                     return "Возвращена";
 
-                if (DateTime.Now > BorrowDate.AddDays(14))
+                if (DateTime.Now > ReturnDue)
                     return "Просрочена";
 
                 return "На руках";
@@ -37,6 +38,6 @@ namespace Project.Models
             }
         }
 
-        public DateTime ReturnDue => BorrowDate.AddDays(14);
+        public DateTime ReturnDue => BorrowDate.AddDays(LoanDays);
     }
 }

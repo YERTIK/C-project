@@ -1,4 +1,4 @@
-﻿
+
 namespace Project
 {
     partial class ProfileForm

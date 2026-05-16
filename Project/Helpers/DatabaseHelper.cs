@@ -23,7 +23,9 @@ namespace Project.Helpers
             TextFileStorage.EnsureFileExists(UsersPath);
             TextFileStorage.EnsureFileExists(BooksPath);
             TextFileStorage.EnsureFileExists(BorrowingsPath);
+            GenreHelper.InitializeGenres();
             EnsureAdminUser();
+            EnsureSampleBooks();
         }
 
         private static void EnsureAdminUser()
@@ -58,8 +60,7 @@ namespace Project.Helpers
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при поиске пользователя: {ex.Message}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppDialog.Error(null, $"Ошибка при поиске пользователя: {ex.Message}");
                 return null;
             }
         }
@@ -85,8 +86,7 @@ namespace Project.Helpers
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при регистрации: {ex.Message}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppDialog.Error(null, $"Ошибка при регистрации: {ex.Message}");
                 return false;
             }
         }
@@ -152,7 +152,7 @@ namespace Project.Helpers
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}");
+                AppDialog.Error(null, $"Ошибка: {ex.Message}");
                 return false;
             }
         }
@@ -207,7 +207,8 @@ namespace Project.Helpers
                     BookAuthor = book.Author,
                     BorrowDate = borrowing.BorrowDate,
                     ReturnDate = borrowing.ReturnDate,
-                    ReturnDue = borrowing.BorrowDate.AddDays(14)
+                    ReturnDue = borrowing.BorrowDate.AddDays(book.LoanDays > 0 ? book.LoanDays : 14),
+                    LoanDays = book.LoanDays > 0 ? book.LoanDays : 14
                 });
             }
 
@@ -257,11 +258,11 @@ namespace Project.Helpers
                 }
 
                 SaveBooks(books);
-                MessageBox.Show($"Добавлено {addedCount} книг с жанрами!", "Успех");
+                AppDialog.Success(null, $"Добавлено {addedCount} книг с жанрами!");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}");
+                AppDialog.Error(null, $"Ошибка: {ex.Message}");
             }
         }
 
@@ -271,6 +272,8 @@ namespace Project.Helpers
             {
                 var books = LoadBooks();
                 book.Id = books.Count == 0 ? 1 : books.Max(b => b.Id) + 1;
+                if (string.IsNullOrWhiteSpace(book.ISBN))
+                    book.ISBN = GenerateUniqueIsbn(book.Id, books);
                 books.Add(book);
                 SaveBooks(books);
                 return true;
@@ -295,11 +298,11 @@ namespace Project.Helpers
                     .ToList();
 
                 SaveBooks(books);
-                MessageBox.Show($"Удалено {before - books.Count} дубликатов книг!", "Очистка");
+                AppDialog.Success(null, $"Удалено {before - books.Count} дубликатов книг!", "Очистка");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка");
+                AppDialog.Error(null, $"Ошибка: {ex.Message}");
             }
         }
 
@@ -310,11 +313,11 @@ namespace Project.Helpers
                 SaveBorrowings(new List<Borrowing>());
                 SaveBooks(new List<Book>());
                 AddTestBooks();
-                MessageBox.Show("Таблица книг полностью пересоздана!", "Успех");
+                AppDialog.Success(null, "Таблица книг полностью пересоздана!");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}");
+                AppDialog.Error(null, $"Ошибка: {ex.Message}");
             }
         }
 
@@ -339,11 +342,11 @@ namespace Project.Helpers
                 }
 
                 SaveBooks(books);
-                MessageBox.Show($"Обновлено жанров: {updated}", "Успех");
+                AppDialog.Success(null, $"Обновлено жанров: {updated}");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}");
+                AppDialog.Error(null, $"Ошибка: {ex.Message}");
             }
         }
 
@@ -363,11 +366,11 @@ namespace Project.Helpers
                 }
 
                 SaveBooks(merged);
-                MessageBox.Show($"Объединено и удалено {before - merged.Count} дубликатов!", "Очистка");
+                AppDialog.Success(null, $"Объединено и удалено {before - merged.Count} дубликатов!", "Очистка");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}");
+                AppDialog.Error(null, $"Ошибка: {ex.Message}");
             }
         }
 
@@ -394,7 +397,8 @@ namespace Project.Helpers
                         BookTitle = book.Title,
                         BookAuthor = book.Author,
                         BorrowDate = borrowing.BorrowDate,
-                        ReturnDate = borrowing.ReturnDate
+                        ReturnDate = borrowing.ReturnDate,
+                        LoanDays = book.LoanDays > 0 ? book.LoanDays : 14
                     });
                 }
             }
@@ -493,7 +497,8 @@ namespace Project.Helpers
                     Genre = fields[3],
                     ISBN = fields[4],
                     Year = ParseInt(fields[5]),
-                    Quantity = ParseInt(fields[6])
+                    Quantity = ParseInt(fields[6]),
+                    LoanDays = fields.Length >= 8 ? ParseInt(fields[7]) : 14
                 });
             }
 
@@ -510,7 +515,8 @@ namespace Project.Helpers
                 b.Genre ?? string.Empty,
                 b.ISBN ?? string.Empty,
                 b.Year.ToString(),
-                b.Quantity.ToString()
+                b.Quantity.ToString(),
+                (b.LoanDays > 0 ? b.LoanDays : 14).ToString()
             });
 
             TextFileStorage.WriteRecords(BooksPath, records);
@@ -584,6 +590,55 @@ namespace Project.Helpers
             if (title.IndexOf("Десять негритят", StringComparison.OrdinalIgnoreCase) >= 0) return "Детектив";
 
             return string.Empty;
+        }
+
+        private static void EnsureSampleBooks()
+        {
+            var books = LoadBooks();
+            if (books.Count > 0)
+                return;
+
+            var sampleBooks = new List<Book>
+            {
+                new Book { Title = "Тень Империи", Author = "Алекс Ворон", Genre = "Фантастика", Year = 2021, Quantity = 5, LoanDays = 14, ISBN = "9785171234567" },
+                new Book { Title = "Последний Рубеж", Author = "Игорь Стрелков", Genre = "Боевик", Year = 2019, Quantity = 3, LoanDays = 10, ISBN = "9785049876543" },
+                new Book { Title = "Дом у Озера", Author = "Мария Лесная", Genre = "Роман", Year = 2018, Quantity = 2, LoanDays = 7, ISBN = "9785698123456" },
+                new Book { Title = "Код Пустоты", Author = "Никита Орлов", Genre = "Детектив", Year = 2022, Quantity = 4, LoanDays = 12, ISBN = "9785177777771" },
+                new Book { Title = "Северный Ветер", Author = "Анна Волкова", Genre = "Роман", Year = 2017, Quantity = 6, LoanDays = 9, ISBN = "9785444412345" },
+                new Book { Title = "Черный Сектор", Author = "Денис Карпов", Genre = "Фантастика", Year = 2020, Quantity = 8, LoanDays = 15, ISBN = "9785123498765" },
+                new Book { Title = "Пепел Города", Author = "Артем Клин", Genre = "Боевик", Year = 2016, Quantity = 2, LoanDays = 5, ISBN = "9785000011112" },
+                new Book { Title = "Тайна Архива", Author = "Ольга Миронова", Genre = "Детектив", Year = 2023, Quantity = 7, LoanDays = 14, ISBN = "9785111122223" }
+            };
+
+            int nextId = 1;
+            foreach (var book in sampleBooks)
+            {
+                book.Id = nextId++;
+                books.Add(book);
+            }
+
+            foreach (var genre in sampleBooks.Select(b => b.Genre).Distinct())
+            {
+                if (!GenreHelper.GenreExists(genre))
+                    GenreHelper.AddGenre(genre);
+            }
+
+            SaveBooks(books);
+        }
+
+        private static string GenerateUniqueIsbn(int bookId, List<Book> existingBooks)
+        {
+            var used = new HashSet<string>(
+                existingBooks.Where(b => !string.IsNullOrWhiteSpace(b.ISBN)).Select(b => b.ISBN));
+
+            for (int offset = 0; offset < 10000; offset++)
+            {
+                string isbn = "978" + (bookId + offset).ToString("D10");
+                if (!used.Contains(isbn))
+                    return isbn;
+            }
+
+            return "978" + DateTime.Now.Ticks.ToString().Substring(0, 10);
         }
     }
 }

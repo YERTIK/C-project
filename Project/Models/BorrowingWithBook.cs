@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Project.Models
 {
@@ -11,6 +11,7 @@ namespace Project.Models
         public DateTime BorrowDate { get; set; }
         public DateTime? ReturnDate { get; set; }
         public DateTime ReturnDue { get; set; }
+        public int LoanDays { get; set; } = 14;
 
         // Для отображения в DataGridView
         public string Status
@@ -27,8 +28,7 @@ namespace Project.Models
                 if (ReturnDate != null)
                     return "Возвращена";
 
-                // Просрочка если прошло больше 14 дней
-                if (DateTime.Now > BorrowDate.AddDays(14))
+                if (DateTime.Now > ReturnDue)
                     return "Просрочена";
 
                 return "На руках";
@@ -39,9 +39,9 @@ namespace Project.Models
             get
             {
                 return $"Взята: {BorrowDate:dd.MM.yyyy}, " +
-                       $"Должна быть возвращена: {BorrowDate.AddDays(14):dd.MM.yyyy}, " +
+                       $"Должна быть возвращена: {ReturnDue:dd.MM.yyyy}, " +
                        $"Сегодня: {DateTime.Now:dd.MM.yyyy}, " +
-                       $"Просрочена: {DateTime.Now > BorrowDate.AddDays(14)}";
+                       $"Просрочена: {DateTime.Now > ReturnDue}";
             }
         }
         public string DaysLeft

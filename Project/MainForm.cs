@@ -186,30 +186,18 @@ namespace Project
 
             if (selectedBooks.Count == 0)
             {
-                MessageBox.Show("Выберите книги для взятия!", "Информация",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                AppDialog.Info(this, "Выберите книги для взятия!");
                 return;
             }
 
-            // Запрашиваем количество для каждой книги
             List<Tuple<Book, int>> booksToBorrow = new List<Tuple<Book, int>>();
 
             foreach (Book book in selectedBooks)
             {
-                string input = Microsoft.VisualBasic.Interaction.InputBox(
-                    $"Книга: {book.Title}\nДоступно: {book.AvailableQuantity} экз.\n\nСколько взять?",
-                    book.Title,
-                    "1");
-
-                if (string.IsNullOrEmpty(input)) continue;
-
-                if (int.TryParse(input, out int quantity) && quantity > 0 && quantity <= book.AvailableQuantity)
+                using (var borrowForm = new BorrowBookForm(book))
                 {
-                    booksToBorrow.Add(new Tuple<Book, int>(book, quantity));
-                }
-                else
-                {
-                    MessageBox.Show($"Некорректное количество для книги '{book.Title}'!", "Ошибка");
+                    if (borrowForm.ShowDialog(this) == DialogResult.OK)
+                        booksToBorrow.Add(new Tuple<Book, int>(book, borrowForm.SelectedQuantity));
                 }
             }
 
@@ -222,15 +210,20 @@ namespace Project
                 message += $"• {item.Item1.Title} - {item.Item2} экз.\n";
             }
 
-            if (MessageBox.Show(message + "\nПодтвердить?", "Подтверждение",
-                MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (AppDialog.Confirm(this, message + "\n\nПодтвердить?", "Подтверждение"))
             {
                 foreach (var item in booksToBorrow)
                 {
                     DatabaseHelper.BorrowBook(AuthManager.CurrentUser.Id, item.Item1.Id, item.Item2);
                 }
 
+                string successMessage = "Книги успешно взяты:\n";
+                foreach (var item in booksToBorrow)
+                {
+                    successMessage += $"• {item.Item1.Title} — {item.Item2} экз.\n";
+                }
 
+                AppDialog.Success(this, successMessage.TrimEnd());
                 ClearCheckboxes();
                 LoadBooks();
             }
@@ -277,8 +270,7 @@ namespace Project
                 // Показываем количество найденных
                 if (currentBooks.Count == 0)
                 {
-                    MessageBox.Show($"Ничего не найдено по запросу: '{txtSearch.Text}'",
-                        "Поиск", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    AppDialog.Info(this, $"Ничего не найдено по запросу: '{txtSearch.Text}'", "Поиск");
                 }
             }
 
@@ -322,7 +314,14 @@ namespace Project
 
         private void btnAddBook_Click(object sender, EventArgs e)
         {
-            // TODO: форма добавления книги
+            if (!AuthManager.IsAdmin)
+                return;
+
+            using (var addBookForm = new AddBookForm())
+            {
+                if (addBookForm.ShowDialog(this) == DialogResult.OK)
+                    LoadBooks();
+            }
         }
 
     }

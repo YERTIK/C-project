@@ -53,6 +53,32 @@ namespace Project.Helpers
             File.WriteAllLines(filePath, lines, Utf8);
         }
 
+        public static List<string> ReadLines(string filePath)
+        {
+            EnsureFileExists(filePath);
+            var lines = new List<string>();
+
+            foreach (var line in File.ReadAllLines(filePath, Utf8))
+            {
+                var trimmed = (line ?? string.Empty).Trim();
+                if (!string.IsNullOrEmpty(trimmed))
+                    lines.Add(trimmed);
+            }
+
+            return lines;
+        }
+
+        public static void WriteLines(string filePath, IEnumerable<string> lines)
+        {
+            EnsureDataDirectory();
+            var normalized = lines
+                .Where(l => !string.IsNullOrWhiteSpace(l))
+                .Select(l => l.Trim())
+                .ToList();
+
+            File.WriteAllLines(filePath, normalized, Utf8);
+        }
+
         private static string[] ParseLine(string line)
         {
             var fields = new List<string>();

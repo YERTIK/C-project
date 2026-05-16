@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Security.Cryptography;
 using System.Text;
@@ -232,8 +232,7 @@ namespace Project
 
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
             {
-                MessageBox.Show("Введите логин и пароль!", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                AppDialog.Warning(this, "Введите логин и пароль!");
                 return;
             }
 
@@ -243,8 +242,7 @@ namespace Project
 
                 if (userFromDb == null)
                 {
-                    MessageBox.Show("Пользователь не найден!", "Ошибка",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    AppDialog.Error(this, "Пользователь не найден!");
                     return;
                 }
 
@@ -253,8 +251,7 @@ namespace Project
                 if (userFromDb.Password == hashedPassword)
                 {
                     AuthManager.CurrentUser = userFromDb;
-                    MessageBox.Show($"Добро пожаловать, {userFromDb.FullName}!",
-                        "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    AppDialog.Success(this, $"Добро пожаловать, {userFromDb.FullName}!");
 
                     MainForm mainForm = new MainForm();
                     mainForm.Show();
@@ -262,16 +259,14 @@ namespace Project
                 }
                 else
                 {
-                    MessageBox.Show("Неверный пароль!", "Ошибка",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    AppDialog.Error(this, "Неверный пароль!");
                     txtPassword.Clear();
                     txtPassword.Focus();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при входе: {ex.Message}", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppDialog.Error(this, $"Ошибка при входе: {ex.Message}");
             }
         }
 
