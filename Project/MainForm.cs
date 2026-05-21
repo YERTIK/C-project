@@ -134,21 +134,7 @@ namespace Project
             dgvBooks.DataSource = null;
             dgvBooks.DataSource = currentBooks;
 
-            UpdateStats();
         }
-
-        private void UpdateStats()
-        {
-            if (allBooks != null && allBooks.Count > 0)
-            {
-                int totalBooks = allBooks.Sum(b => b.Quantity);
-                int availableBooks = allBooks.Sum(b => b.AvailableQuantity);
-                int borrowedBooks = totalBooks - availableBooks;
-
-                this.Text = $"Библиотека - Всего: {totalBooks}, Доступно: {availableBooks}, Взято: {borrowedBooks}";
-            }
-        }
-
         private void btnBorrow_Click(object sender, EventArgs e)
         {
             // Собираем книги, отмеченные чекбоксами
@@ -310,6 +296,7 @@ namespace Project
         private void ApplyAdminUI()
         {
             btnAddBook.Visible = AuthManager.IsAdmin;
+            btnDeleteBook.Visible = AuthManager.IsAdmin;
         }
 
         private void btnAddBook_Click(object sender, EventArgs e)
@@ -321,6 +308,87 @@ namespace Project
             {
                 if (addBookForm.ShowDialog(this) == DialogResult.OK)
                     LoadBooks();
+            }
+        }
+
+        private void btnDeleteBook_Click(object sender, EventArgs e)
+        {
+            if (!AuthManager.IsAdmin)
+                return;
+
+            // Собираем книги, отмеченные чекбоксами
+            List<Book> booksToDelete = new List<Book>();
+
+            foreach (DataGridViewRow row in dgvBooks.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                DataGridViewCheckBoxCell checkBox = row.Cells["Select"] as DataGridViewCheckBoxCell;
+                if (checkBox != null && Convert.ToBoolean(checkBox.Value) == true)
+                {
+                    Book book = row.DataBoundItem as Book;
+                    if (book != null)
+                    {
+                        booksToDelete.Add(book);
+                    }
+                }
+            }
+
+            // Если нет отмеченных, берем выделенные строки
+            if (booksToDelete.Count == 0)
+            {
+                foreach (DataGridViewRow row in dgvBooks.SelectedRows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    Book book = row.DataBoundItem as Book;
+                    if (book != null)
+                    {
+                        booksToDelete.Add(book);
+                    }
+                }
+            }
+
+            if (booksToDelete.Count == 0)
+            {
+                AppDialog.Info(this, "Выберите книги для удаления!");
+                return;
+            }
+
+            // Подтверждение
+            string message = "Вы удаляете:\n";
+            foreach (var book in booksToDelete)
+            {
+                message += $"• {book.Title} - {book.Author}\n";
+            }
+
+            if (AppDialog.Confirm(this, message + "\n\nВсе активные выдачи этих книг будут помечены как возвращенные.\n\nПродолжить?", "Подтверждение удаления"))
+            {
+                bool allDeleted = true;
+                foreach (var book in booksToDelete)
+                {
+                    if (!DatabaseHelper.DeleteBook(book.Id))
+                    {
+                        allDeleted = false;
+                    }
+                }
+
+                if (allDeleted)
+                {
+                    string successMessage = "Книги успешно удалены:\n";
+                    foreach (var book in booksToDelete)
+                    {
+                        successMessage += $"• {book.Title}\n";
+                    }
+                    AppDialog.Success(this, successMessage.TrimEnd());
+                }
+                else
+                {
+                    AppDialog.Error(this, "Ошибка при удалении некоторых книг");
+                }
+
+                ClearCheckboxes();
+                LoadBooks();
             }
         }
 

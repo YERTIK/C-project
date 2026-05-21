@@ -38,6 +38,7 @@ namespace Project
             this.btnProfile = new System.Windows.Forms.Button();
             this.btnLogout = new System.Windows.Forms.Button();
             this.btnAddBook = new System.Windows.Forms.Button();
+            this.btnDeleteBook = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBooks)).BeginInit();
             this.SuspendLayout();
             // 
@@ -172,6 +173,24 @@ namespace Project
             this.btnAddBook.Visible = false;
             this.btnAddBook.Click += new System.EventHandler(this.btnAddBook_Click);
             // 
+            // btnDeleteBook
+            // 
+            this.btnDeleteBook.BackColor = System.Drawing.Color.IndianRed;
+            this.btnDeleteBook.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDeleteBook.FlatAppearance.BorderSize = 0;
+            this.btnDeleteBook.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDeleteBook.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold);
+            this.btnDeleteBook.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnDeleteBook.Location = new System.Drawing.Point(796, 152);
+            this.btnDeleteBook.Margin = new System.Windows.Forms.Padding(4);
+            this.btnDeleteBook.Name = "btnDeleteBook";
+            this.btnDeleteBook.Size = new System.Drawing.Size(146, 30);
+            this.btnDeleteBook.TabIndex = 10;
+            this.btnDeleteBook.Text = "Удалить книгу";
+            this.btnDeleteBook.UseVisualStyleBackColor = false;
+            this.btnDeleteBook.Visible = false;
+            this.btnDeleteBook.Click += new System.EventHandler(this.btnDeleteBook_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
@@ -179,6 +198,7 @@ namespace Project
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.DimGray;
             this.ClientSize = new System.Drawing.Size(1087, 608);
+            this.Controls.Add(this.btnDeleteBook);
             this.Controls.Add(this.btnAddBook);
             this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.btnProfile);
@@ -210,5 +230,6 @@ namespace Project
         private System.Windows.Forms.Button btnProfile;
         private System.Windows.Forms.Button btnLogout;
         private System.Windows.Forms.Button btnAddBook;
+        private System.Windows.Forms.Button btnDeleteBook;
     }
 }

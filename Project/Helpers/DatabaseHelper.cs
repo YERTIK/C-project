@@ -234,6 +234,35 @@ namespace Project.Helpers
             }
         }
 
+        public static bool DeleteBook(int bookId)
+        {
+            try
+            {
+                var books = LoadBooks();
+                if (!books.Any(b => b.Id == bookId))
+                    return false;
+
+                var borrowings = LoadBorrowings();
+                var now = DateTime.Now;
+
+                // Помечаем активные выдачи этой книги как возвращенные
+                foreach (var borrowing in borrowings.Where(b => b.BookId == bookId && !b.ReturnDate.HasValue))
+                    borrowing.ReturnDate = now;
+
+                // Удаляем саму книгу
+                books.RemoveAll(b => b.Id == bookId);
+
+                SaveBooks(books);
+                SaveBorrowings(borrowings);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка удаления книги: {ex.Message}");
+                return false;
+            }
+        }
+
         public static void FixMissingGenres()
         {
             try
