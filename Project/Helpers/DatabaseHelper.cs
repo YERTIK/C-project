@@ -215,57 +215,6 @@ namespace Project.Helpers
             return result;
         }
 
-        public static void AddTestBooks()
-        {
-            try
-            {
-                var books = LoadBooks();
-                var testBooks = new List<Book>
-                {
-                    new Book { Title = "Война и мир", Author = "Лев Толстой", Genre = "Роман", Year = 1869, Quantity = 5 },
-                    new Book { Title = "Анна Каренина", Author = "Лев Толстой", Genre = "Роман", Year = 1877, Quantity = 3 },
-                    new Book { Title = "Преступление и наказание", Author = "Федор Достоевский", Genre = "Роман", Year = 1866, Quantity = 4 },
-                    new Book { Title = "Идиот", Author = "Федор Достоевский", Genre = "Роман", Year = 1869, Quantity = 2 },
-                    new Book { Title = "Мастер и Маргарита", Author = "Михаил Булгаков", Genre = "Роман", Year = 1967, Quantity = 4 },
-                    new Book { Title = "Евгений Онегин", Author = "Александр Пушкин", Genre = "Поэзия", Year = 1833, Quantity = 3 },
-                    new Book { Title = "Десять негритят", Author = "Агата Кристи", Genre = "Детектив", Year = 1939, Quantity = 3 },
-                    new Book { Title = "Убийство в Восточном экспрессе", Author = "Агата Кристи", Genre = "Детектив", Year = 1934, Quantity = 2 },
-                    new Book { Title = "Собака Баскервилей", Author = "Артур Конан Дойл", Genre = "Детектив", Year = 1902, Quantity = 2 },
-                    new Book { Title = "Шерлок Холмс", Author = "Артур Конан Дойл", Genre = "Детектив", Year = 1887, Quantity = 3 },
-                    new Book { Title = "1984", Author = "Джордж Оруэлл", Genre = "Фантастика", Year = 1949, Quantity = 4 },
-                    new Book { Title = "Маленький принц", Author = "Антуан де Сент-Экзюпери", Genre = "Сказка", Year = 1943, Quantity = 4 },
-                    new Book { Title = "Метро 2033", Author = "Дмитрий Глуховский", Genre = "Фантастика", Year = 2005, Quantity = 3 },
-                    new Book { Title = "451 градус по Фаренгейту", Author = "Рэй Брэдбери", Genre = "Фантастика", Year = 1953, Quantity = 3 },
-                    new Book { Title = "Три мушкетера", Author = "Александр Дюма", Genre = "Приключения", Year = 1844, Quantity = 3 },
-                    new Book { Title = "Граф Монте-Кристо", Author = "Александр Дюма", Genre = "Приключения", Year = 1844, Quantity = 2 },
-                    new Book { Title = "Таинственный остров", Author = "Жюль Верн", Genre = "Приключения", Year = 1874, Quantity = 2 },
-                    new Book { Title = "Ромео и Джульетта", Author = "Уильям Шекспир", Genre = "Поэзия", Year = 1597, Quantity = 3 },
-                    new Book { Title = "Гамлет", Author = "Уильям Шекспир", Genre = "Поэзия", Year = 1603, Quantity = 2 },
-                    new Book { Title = "Сияние", Author = "Стивен Кинг", Genre = "Триллер", Year = 1977, Quantity = 2 },
-                    new Book { Title = "Оно", Author = "Стивен Кинг", Genre = "Ужасы", Year = 1986, Quantity = 2 },
-                    new Book { Title = "Зеленая миля", Author = "Стивен Кинг", Genre = "Драма", Year = 1996, Quantity = 2 }
-                };
-
-                int nextId = books.Count == 0 ? 1 : books.Max(b => b.Id) + 1;
-                int addedCount = 0;
-
-                foreach (var book in testBooks)
-                {
-                    book.Id = nextId++;
-                    book.ISBN = string.Empty;
-                    books.Add(book);
-                    addedCount++;
-                }
-
-                SaveBooks(books);
-                AppDialog.Success(null, $"Добавлено {addedCount} книг с жанрами!");
-            }
-            catch (Exception ex)
-            {
-                AppDialog.Error(null, $"Ошибка: {ex.Message}");
-            }
-        }
-
         public static bool AddBook(Book book)
         {
             try
@@ -282,42 +231,6 @@ namespace Project.Helpers
             {
                 System.Diagnostics.Debug.WriteLine($"Ошибка добавления книги: {ex.Message}");
                 return false;
-            }
-        }
-
-        public static void RemoveDuplicateBooks()
-        {
-            try
-            {
-                var books = LoadBooks();
-                int before = books.Count;
-
-                books = books
-                    .GroupBy(b => new { b.Title, b.Author, b.Year })
-                    .Select(g => g.OrderBy(b => b.Id).First())
-                    .ToList();
-
-                SaveBooks(books);
-                AppDialog.Success(null, $"Удалено {before - books.Count} дубликатов книг!", "Очистка");
-            }
-            catch (Exception ex)
-            {
-                AppDialog.Error(null, $"Ошибка: {ex.Message}");
-            }
-        }
-
-        public static void ResetBooksTable()
-        {
-            try
-            {
-                SaveBorrowings(new List<Borrowing>());
-                SaveBooks(new List<Book>());
-                AddTestBooks();
-                AppDialog.Success(null, "Таблица книг полностью пересоздана!");
-            }
-            catch (Exception ex)
-            {
-                AppDialog.Error(null, $"Ошибка: {ex.Message}");
             }
         }
 

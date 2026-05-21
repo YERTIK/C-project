@@ -1,21 +1,11 @@
 using System;
-
 using System.Collections.Generic;
-
 using System.Drawing;
-
 using System.Linq;
-
 using System.Windows.Forms;
-
 using Project.Helpers;
-
 using Project.Models;
-
-
-
 namespace Project
-
 {
 
     public partial class ProfileForm : Form
@@ -37,16 +27,10 @@ namespace Project
         {
 
             InitializeComponent();
-
             SetupDataGridView();
-
             LoadUserData();
-
             SetupViewToggle();
-
             LoadActiveBooks();
-
-
 
             // дабавляем конпку массового возврата
 
@@ -58,15 +42,11 @@ namespace Project
 
         {
 
-            // Создаем переключатель (RadioButton) или кнопки
+ 
 
             rbActive.Checked = true; // По умолчанию показываем активные
 
             rbHistory.Checked = false;
-
-
-
-            // Подписываемся на события
 
             rbActive.CheckedChanged += ViewToggle_CheckedChanged;
 
